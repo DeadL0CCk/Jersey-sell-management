@@ -26,6 +26,7 @@
         <div class="filter-actions">
             <button type="submit" class="btn btn-secondary">Filter</button>
             <a href="{{ url_for('inventory') }}" class="btn btn-ghost">Clear</a>
+            <a href="{{ url_for('export_inventory', search=search, size=size_filter) }}" class="btn btn-primary">Export CSV</a>
         </div>
     </form>
 </section>

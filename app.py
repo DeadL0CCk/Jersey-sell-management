@@ -1,4 +1,6 @@
-from flask import Flask, flash, redirect, render_template, request, url_for
+import csv
+import io
+from flask import Flask, Response, flash, redirect, render_template, request, url_for
 
 from database import init_db
 import models
@@ -140,6 +142,53 @@ def inventory():
         search=search,
         size_filter=size_filter,
         sizes=SIZES,
+    )
+
+
+@app.route("/inventory/export")
+def export_inventory():
+    search = request.args.get("search", "")
+    size_filter = request.args.get("size", "")
+    jerseys = models.get_all_jerseys_with_stats(search=search, size_filter=size_filter)
+
+    output = io.StringIO()
+    writer = csv.writer(output)
+
+    # Write CSV headers
+    writer.writerow([
+        "Team",
+        "Player / Variant",
+        "Size",
+        "Initial Stock",
+        "Remaining Stock",
+        "Sold Count",
+        "Unit Price (BDT)",
+        "Total Revenue (BDT)",
+        "Last Sale Date"
+    ])
+
+    # Write CSV rows
+    for j in jerseys:
+        sold = j.get("sold_count", 0)
+        price = j.get("unit_price", 0.0)
+        revenue = sold * price
+        writer.writerow([
+            j.get("team", ""),
+            j.get("player_name", "") or "—",
+            j.get("size", ""),
+            j.get("initial_stock", 0),
+            j.get("current_stock", 0),
+            sold,
+            price,
+            revenue,
+            j.get("last_sale_at", "") or "—"
+        ])
+
+    output.seek(0)
+    return Response(
+        output.getvalue(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=jersey_inventory.csv"}
     )
 
 
