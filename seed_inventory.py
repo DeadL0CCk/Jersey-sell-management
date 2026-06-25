@@ -5,29 +5,29 @@ from models import price_for_size
 
 INVENTORY = [
     ("Argentina", "Home", [("2XL", 2), ("XL", 1)]),
-    ("Argentina", "Away", [("XL", 5), ("L", 2), ("2XL", 1)]),
-    ("Argentina", "Terrace", [("XL", 4), ("L", 2), ("4XL", 2)]),
-    ("Brazil", "Home", [("L", 3), ("2XL", 2), ("XL", 2)]),
-    ("Brazil", "Away", [("M", 3), ("S", 2), ("XL", 1), ("L", 1)]),
-    ("Brazil", "Terrace", [("2XL", 3), ("L", 1)]),
-    ("England", "Away", [("3XL", 1)]),
-    ("England", "Home", [("3XL", 1)]),
+    ("Argentina", "Away", [("XL", 4), ("L", 1)]),
+    ("Argentina", "Terrace", [("4XL", 2), ("XL", 4), ("L", 1)]),
+    ("Brazil", "Home", [("2XL", 2), ("XL", 4), ("L", 3)]),
+    ("Brazil", "Away", [("XL", 1), ("L", 1), ("M", 3), ("S", 1)]),
+    ("Brazil", "Terrace", [("2XL", 2), ("L", 1)]),
+    ("England", "Home", [("3XL", 2)]),
     ("Germany", "Home", [("2XL", 3), ("XL", 1), ("L", 1), ("M", 1)]),
-    ("Germany", "Away", [("XL", 1)]),
-    ("Japan", "Home", [("2XL", 2), ("XL", 2), ("L", 2)]),
-    ("Korea", "Home", [("XL", 1), ("2XL", 1)]),
-    ("Portugal", "Home", [("3XL", 2), ("S", 1)]),
-    ("Portugal", "Away", [("XL", 3), ("2XL", 2), ("L", 1), ("M", 1)]),
+    ("Japan", "Home", [("2XL", 2), ("XL", 1)]),
+    ("Korea", "Home", [("2XL", 1), ("XL", 1)]),
+    ("Portugal", "Home", [("S", 1)]),
+    ("Portugal", "Away", [("2XL", 2), ("XL", 3)]),
     ("Spain", "Home", [("3XL", 2), ("L", 1)]),
-    ("Spain", "Away", [("XL", 5), ("L", 2), ("2XL", 1)]),
+    ("Spain", "Away", [("XL", 5)]),
     ("USA", "Home", [("2XL", 1), ("XL", 1)]),
-    ("USA", "Away", [("L", 1)]),
 ]
 
 OUT_OF_STOCK = [
     ("Brazil", "White Concept"),
     ("France", "Home"),
     ("Morocco", "Home"),
+    ("England", "Away"),
+    ("Germany", "Away"),
+    ("USA", "Away"),
 ]
 
 

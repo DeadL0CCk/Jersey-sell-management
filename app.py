@@ -58,11 +58,17 @@ def setup_stock():
             flash("Enter a valid unit price.", "error")
             return redirect(url_for("setup_stock"))
 
-        models.add_jersey(team, player_name, size, qty, unit_price)
-        flash(
-            f"Added {team} {player_name} ({size}) — {qty} in stock at {unit_price:.0f} each.",
-            "success",
-        )
+        jersey_id, merged, total_qty = models.add_jersey(team, player_name, size, qty, unit_price)
+        if merged:
+            flash(
+                f"Merged into existing {team} {player_name} ({size}). Added {qty} more. Total stock is now {total_qty} at {unit_price:.0f} each.",
+                "success",
+            )
+        else:
+            flash(
+                f"Added {team} {player_name} ({size}) — {qty} in stock at {unit_price:.0f} each.",
+                "success",
+            )
         return redirect(url_for("setup_stock"))
 
     jerseys = models.get_all_jerseys_with_stats()

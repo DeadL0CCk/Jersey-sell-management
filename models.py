@@ -30,15 +30,37 @@ def apply_size_pricing():
 def add_jersey(team, player_name, size, initial_stock, unit_price):
     conn = get_connection()
     try:
-        cursor = conn.execute(
+        existing = conn.execute(
             """
-            INSERT INTO jerseys (team, player_name, size, initial_stock, current_stock, unit_price)
-            VALUES (?, ?, ?, ?, ?, ?)
+            SELECT id, initial_stock, current_stock FROM jerseys
+            WHERE LOWER(team) = LOWER(?) AND LOWER(player_name) = LOWER(?) AND LOWER(size) = LOWER(?)
             """,
-            (team.strip(), player_name.strip(), size.strip(), initial_stock, initial_stock, unit_price),
-        )
-        conn.commit()
-        return cursor.lastrowid
+            (team.strip(), player_name.strip(), size.strip()),
+        ).fetchone()
+
+        if existing:
+            new_initial = existing["initial_stock"] + initial_stock
+            new_current = existing["current_stock"] + initial_stock
+            conn.execute(
+                """
+                UPDATE jerseys
+                SET initial_stock = ?, current_stock = ?, unit_price = ?
+                WHERE id = ?
+                """,
+                (new_initial, new_current, unit_price, existing["id"]),
+            )
+            conn.commit()
+            return existing["id"], True, new_current
+        else:
+            cursor = conn.execute(
+                """
+                INSERT INTO jerseys (team, player_name, size, initial_stock, current_stock, unit_price)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (team.strip(), player_name.strip(), size.strip(), initial_stock, initial_stock, unit_price),
+            )
+            conn.commit()
+            return cursor.lastrowid, False, initial_stock
     finally:
         conn.close()
 
