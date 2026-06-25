@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Record Sale — Jersey Sales Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Record Sale</h1>
+    <p>Pick the jersey and quantity sold. Stock updates automatically.</p>
+</section>
+
+<section class="panel">
+    {% if jerseys %}
+    <form method="post" class="form-grid">
+        <label>
+            Jersey *
+            <select name="jersey_id" required>
+                <option value="">Select jersey</option>
+                {% for jersey in jerseys %}
+                <option value="{{ jersey.id }}">
+                    {{ jersey.team }} {{ jersey.player_name }} ({{ jersey.size }}) — {{ jersey.current_stock }} left @ {{ "%.2f"|format(jersey.unit_price) }}
+                </option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Quantity Sold *
+            <input type="number" name="quantity" min="1" step="1" value="1" required>
+        </label>
+        <label class="full-width">
+            Note (optional)
+            <input type="text" name="note" placeholder="e.g. WhatsApp order — Karim">
+        </label>
+        <div class="form-actions full-width">
+            <button type="submit" class="btn btn-primary btn-large">Save Sale & Update Stock</button>
+        </div>
+    </form>
+    {% else %}
+    <p class="empty-state">No jerseys in stock. <a href="{{ url_for('setup_stock') }}">Add stock first</a>.</p>
+    {% endif %}
+</section>
+{% endblock %}

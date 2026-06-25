@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Add Stock — Jersey Sales Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Initialize Stock</h1>
+    <p>Add jersey types with your starting quantity. Price is set automatically by size.</p>
+</section>
+
+<section class="panel panel-note">
+    <p class="pricing-note">Pricing: <strong>1100</strong> for S–2XL & XXL · <strong>1200</strong> for 3XL–5XL</p>
+</section>
+
+<section class="panel">
+    <h2>Add New Jersey</h2>
+    <form method="post" class="form-grid">
+        <label>
+            Team *
+            <input type="text" name="team" placeholder="e.g. Barcelona" required>
+        </label>
+        <label>
+            Player / Name
+            <input type="text" name="player_name" placeholder="e.g. Messi or Home Kit">
+        </label>
+        <label>
+            Size *
+            <select name="size" required>
+                <option value="">Select size</option>
+                {% for size in sizes %}
+                <option value="{{ size }}">{{ size }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>
+            Initial Quantity *
+            <input type="number" name="initial_stock" min="1" step="1" placeholder="e.g. 20" required>
+        </label>
+        <div class="form-actions full-width">
+            <button type="submit" class="btn btn-primary btn-large">Add to Stock</button>
+        </div>
+    </form>
+</section>
+
+<section class="panel">
+    <h2>Current Stock Entries</h2>
+    {% if jerseys %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Size</th>
+                    <th>Initial</th>
+                    <th>Left</th>
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jersey in jerseys %}
+                <tr>
+                    <td>{{ jersey.team }}</td>
+                    <td>{{ jersey.player_name or "—" }}</td>
+                    <td>{{ jersey.size }}</td>
+                    <td>{{ jersey.initial_stock }}</td>
+                    <td>
+                        {% if jersey.current_stock <= 2 and jersey.current_stock > 0 %}
+                        <span class="badge badge-warning">{{ jersey.current_stock }}</span>
+                        {% elif jersey.current_stock == 0 %}
+                        <span class="badge badge-danger">0</span>
+                        {% else %}
+                        {{ jersey.current_stock }}
+                        {% endif %}
+                    </td>
+                    <td>{{ "%.0f"|format(jersey.unit_price) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-state">No jerseys added yet. Use the form above to set your initial stock.</p>
+    {% endif %}
+</section>
+{% endblock %}

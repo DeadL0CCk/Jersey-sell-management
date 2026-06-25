@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Delete Stock — Jersey Sales Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Delete Stock</h1>
+    <p>Remove jerseys that are completely out of stock from your inventory list.</p>
+</section>
+
+<section class="panel panel-note">
+    <p class="pricing-note">Only jerseys with <strong>0 left</strong> can be deleted. Jerseys still in stock must be kept until sold out.</p>
+</section>
+
+<section class="panel">
+    {% if jerseys %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Variant</th>
+                    <th>Size</th>
+                    <th>Initial</th>
+                    <th>Sold</th>
+                    <th>Price</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jersey in jerseys %}
+                <tr>
+                    <td>{{ jersey.team }}</td>
+                    <td>{{ jersey.player_name or "—" }}</td>
+                    <td>{{ jersey.size }}</td>
+                    <td>{{ jersey.initial_stock }}</td>
+                    <td>{{ jersey.sold_count }}</td>
+                    <td>{{ "%.0f"|format(jersey.unit_price) }}</td>
+                    <td>
+                        <form method="post" class="inline-form" onsubmit="return confirm('Remove {{ jersey.team }} {{ jersey.player_name }} ({{ jersey.size }}) from inventory?');">
+                            <input type="hidden" name="jersey_id" value="{{ jersey.id }}">
+                            <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-state">No out-of-stock jerseys to remove. Sold-out items will appear here automatically.</p>
+    {% endif %}
+</section>
+{% endblock %}

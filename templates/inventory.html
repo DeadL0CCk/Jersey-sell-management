@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Inventory — Jersey Sales Tracker{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1>Full Inventory</h1>
+    <p>All jersey details — initial stock, sold, remaining, and last sale.</p>
+</section>
+
+<section class="panel">
+    <form method="get" class="filter-row">
+        <label>
+            Search team or player
+            <input type="text" name="search" value="{{ search }}" placeholder="e.g. Real Madrid">
+        </label>
+        <label>
+            Size
+            <select name="size">
+                <option value="">All sizes</option>
+                {% for size in sizes %}
+                <option value="{{ size }}" {% if size_filter == size %}selected{% endif %}>{{ size }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <div class="filter-actions">
+            <button type="submit" class="btn btn-secondary">Filter</button>
+            <a href="{{ url_for('inventory') }}" class="btn btn-ghost">Clear</a>
+        </div>
+    </form>
+</section>
+
+<section class="panel">
+    {% if jerseys %}
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Player</th>
+                    <th>Size</th>
+                    <th>Initial</th>
+                    <th>Sold</th>
+                    <th>Left</th>
+                    <th>Price</th>
+                    <th>Last Sale</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for jersey in jerseys %}
+                <tr>
+                    <td>{{ jersey.team }}</td>
+                    <td>{{ jersey.player_name or "—" }}</td>
+                    <td>{{ jersey.size }}</td>
+                    <td>{{ jersey.initial_stock }}</td>
+                    <td>{{ jersey.sold_count }}</td>
+                    <td>
+                        {% if jersey.current_stock <= 2 and jersey.current_stock > 0 %}
+                        <span class="badge badge-warning">{{ jersey.current_stock }}</span>
+                        {% elif jersey.current_stock == 0 %}
+                        <span class="badge badge-danger">0</span>
+                        {% else %}
+                        {{ jersey.current_stock }}
+                        {% endif %}
+                    </td>
+                    <td>{{ "%.0f"|format(jersey.unit_price) }}</td>
+                    <td>{{ jersey.last_sale_at[:16] if jersey.last_sale_at else "—" }}</td>
+                    <td>
+                        {% if jersey.current_stock == 0 %}
+                        <form method="post" action="{{ url_for('delete_stock') }}" class="inline-form" onsubmit="return confirm('Remove this out-of-stock jersey from inventory?');">
+                            <input type="hidden" name="jersey_id" value="{{ jersey.id }}">
+                            <input type="hidden" name="redirect_to" value="inventory">
+                            <input type="hidden" name="search" value="{{ search }}">
+                            <input type="hidden" name="size_filter" value="{{ size_filter }}">
+                            <button type="submit" class="btn btn-danger btn-small">Delete</button>
+                        </form>
+                        {% else %}
+                        —
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p class="empty-state">No jerseys match your search.</p>
+    {% endif %}
+</section>
+{% endblock %}
