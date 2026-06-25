@@ -1,6 +1,6 @@
 from database import get_connection
 
-LARGE_SIZES = {"3XL", "4XL", "5XL"}
+LARGE_SIZES = {"3XL", "4XL", "5XL", "6XL"}
 PRICE_LARGE = 1200.0
 PRICE_STANDARD = 1100.0
 

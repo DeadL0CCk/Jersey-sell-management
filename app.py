@@ -6,7 +6,7 @@ import models
 app = Flask(__name__)
 app.secret_key = "jersey-sales-tracker-dev-key"
 
-SIZES = ["S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "XXL"]
+SIZES = ["S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL", "6XL"]
 
 
 @app.before_request
