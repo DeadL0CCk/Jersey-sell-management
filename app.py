@@ -34,6 +34,7 @@ def setup_stock():
         player_name = request.form.get("player_name", "")
         size = request.form.get("size", "")
         initial_stock = request.form.get("initial_stock", "")
+        unit_price_str = request.form.get("unit_price", "")
 
         if not team.strip() or not size:
             flash("Team and size are required.", "error")
@@ -47,7 +48,14 @@ def setup_stock():
             flash("Enter a valid quantity (1+).", "error")
             return redirect(url_for("setup_stock"))
 
-        unit_price = models.price_for_size(size)
+        try:
+            unit_price = float(unit_price_str)
+            if unit_price <= 0:
+                raise ValueError
+        except ValueError:
+            flash("Enter a valid unit price.", "error")
+            return redirect(url_for("setup_stock"))
+
         models.add_jersey(team, player_name, size, qty, unit_price)
         flash(
             f"Added {team} {player_name} ({size}) — {qty} in stock at {unit_price:.0f} each.",

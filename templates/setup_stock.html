@@ -5,7 +5,7 @@
 {% block content %}
 <section class="page-header">
     <h1>Initialize Stock</h1>
-    <p>Add jersey types with your starting quantity. Price is set automatically by size.</p>
+    <p>Add jersey types with your starting quantity. Price is suggested by size but can be customized.</p>
 </section>
 
 <section class="panel panel-note">
@@ -35,6 +35,10 @@
         <label>
             Initial Quantity *
             <input type="number" name="initial_stock" min="1" step="1" placeholder="e.g. 20" required>
+        </label>
+        <label>
+            Unit Price *
+            <input type="number" name="unit_price" id="unit_price" min="0" step="any" placeholder="e.g. 1100" required>
         </label>
         <div class="form-actions full-width">
             <button type="submit" class="btn btn-primary btn-large">Add to Stock</button>
@@ -83,4 +87,25 @@
     <p class="empty-state">No jerseys added yet. Use the form above to set your initial stock.</p>
     {% endif %}
 </section>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const sizeSelect = document.querySelector('select[name="size"]');
+    const priceInput = document.getElementById('unit_price');
+    const largeSizes = ["3XL", "4XL", "5XL"];
+
+    sizeSelect.addEventListener("change", function() {
+        const size = sizeSelect.value;
+        if (size) {
+            if (largeSizes.includes(size)) {
+                priceInput.value = 1200;
+            } else {
+                priceInput.value = 1100;
+            }
+        } else {
+            priceInput.value = "";
+        }
+    });
+});
+</script>
 {% endblock %}
